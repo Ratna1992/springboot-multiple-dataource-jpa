@@ -50,8 +50,8 @@ public class HibernateMySQLConfigurationArchitectureSchema {
 		Map<String, Object> properties = new HashMap<>();
 		properties.put("hibernate.hbm2ddl.auto", "update");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
-		properties.put("show_sql", true);
-		properties.put("format_sql", true);
+		properties.put("hibernate.show_sql", true);
+		properties.put("hibernate.format_sql", true);
 		return builder.dataSource(ds).properties(properties).packages("com.ratna.architecture.architecturemodel")
 				.persistenceUnit("architectureSchema").build();
 
