@@ -30,6 +30,8 @@ public class User {
 	private Integer age;
 	@Column(name = "is_active")
 	private Boolean isActive;
+	@Column(name="password")
+	private String password;
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Collection<Role> role = new ArrayList<>();
@@ -93,10 +95,19 @@ public class User {
 		this.dob = dob;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", emailId=" + emailId + ", name=" + name + ", age=" + age + ", isActive=" + isActive
-				+ ", role=" + role + ", dob=" + dob + "]";
+				+ ", password=" + password + ", role=" + role + ", dob=" + dob + "]";
 	}
 
+	
 }
