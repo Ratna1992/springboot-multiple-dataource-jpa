@@ -1,27 +1,27 @@
 package com.ratna.architecture.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class LoginController {
+@Controller
+public class WelcomeController {
 
 	@GetMapping("/")
 	public String home() {
 
-		return ("<h1> Welcome Home</h1");
+		return "welcome";
 	}
 
 	@GetMapping("/user")
 	public String user() {
 
-		return ("<h1> Welcome User</h1");
+		return "welcomeuser";
 	}
 
 	@GetMapping("/admin")
 	public String admin() {
 
-		return ("<h1> Welcome Admin</h1");
+		return "welcomeadmin";
 	}
 
 }
