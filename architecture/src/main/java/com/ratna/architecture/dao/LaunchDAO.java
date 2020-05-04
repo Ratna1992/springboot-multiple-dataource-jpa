@@ -24,7 +24,7 @@ public class LaunchDAO {
 
 	public ArchitectureResponse insertUsers(User user) {
 		ArchitectureResponse architectureResponse = new ArchitectureResponse();
-		String msg = "User saved Successfully with Email";
+		String msg = "User saved Successfully with Email "+user.getEmailId();
 		try {
 			architectureResponse.setStatusCode(200);
 			architectureSchema.persist(user);

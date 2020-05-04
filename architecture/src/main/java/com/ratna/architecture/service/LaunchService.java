@@ -10,6 +10,7 @@ import com.ratna.architecture.architecturemodel.Role;
 import com.ratna.architecture.architecturemodel.User;
 import com.ratna.architecture.dao.LaunchDAO;
 import com.ratna.architecture.transferobjects.ArchitectureResponse;
+import com.ratna.architecture.utility.BcryptPasswordGenerator;
 
 @Service
 public class LaunchService {
@@ -20,13 +21,13 @@ public class LaunchService {
 		User user = new User();
 		user.setAge(26);
 		user.setDob(new Date());
-		user.setEmailId("user@user.com");
-		user.setPassword("user123");
+		user.setEmailId("admin@admin.com");
+		user.setPassword(BcryptPasswordGenerator.encodePassword("admin123"));
 		user.setIsActive(Boolean.TRUE);
 		user.setName("Ratna Srinivas");
 		Role role1 = new Role();
-		role1.setRole("ROLE_USER");
-		role1.setDescription("User OF Organisation");
+		role1.setRole("ROLE_ADMIN");
+		role1.setDescription("Admin OF Organisation");
 		Collection<Role> role = user.getRole();
 		role.add(role1);
 		return launchDAO.insertUsers(user);

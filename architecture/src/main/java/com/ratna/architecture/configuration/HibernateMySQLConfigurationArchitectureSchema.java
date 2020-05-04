@@ -16,8 +16,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -35,9 +37,18 @@ public class HibernateMySQLConfigurationArchitectureSchema {
 	@Bean(name = "mySqlDataSourceArchitectureSchema")
 	@ConfigurationProperties(prefix = "spring.datasource")
 	public DataSource mySqlDataSourceArchitectureSchema() {
-		return DataSourceBuilder.create().driverClassName(prop.getProperty("spring.datasource.driver-class-name"))
-				.password(prop.getProperty("spring.datasource.password")).url(prop.getProperty("spring.datasource.url"))
-				.username(prop.getProperty("spring.datasource.data-username")).build();
+
+		if (prop.getProperty("isJndiRequired").equalsIgnoreCase("false")) {
+			return DataSourceBuilder.create().driverClassName(prop.getProperty("spring.datasource.driver-class-name"))
+					.password(prop.getProperty("spring.datasource.password"))
+					.url(prop.getProperty("spring.datasource.url"))
+					.username(prop.getProperty("spring.datasource.data-username")).build();
+		} else {
+			final JndiDataSourceLookup lookup = new JndiDataSourceLookup();
+			lookup.setResourceRef(true);
+			DataSource dataSource = lookup.getDataSource("jdbc/architecture");
+			return dataSource;
+		}
 	}
 
 	// step2 create entityManagerFactory using

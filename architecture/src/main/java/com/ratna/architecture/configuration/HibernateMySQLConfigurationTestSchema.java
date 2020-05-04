@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -23,7 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(entityManagerFactoryRef = "testEntityManagerFactory", basePackages = {
-		"com.ratna.architecture.testrepository" },transactionManagerRef = "testTransactionManager") // repository
+		"com.ratna.architecture.testrepository" }, transactionManagerRef = "testTransactionManager") // repository
 public class HibernateMySQLConfigurationTestSchema {
 	@Autowired
 	Environment prop;
@@ -32,11 +33,19 @@ public class HibernateMySQLConfigurationTestSchema {
 	@Bean(name = "mySqlDataSourceTestSchema")
 	@ConfigurationProperties(prefix = "spring.second.datasource")
 	public DataSource mySqlDataSourceTestSchema() {
-		return DataSourceBuilder.create()
-				.driverClassName(prop.getProperty("spring.second.datasource.driver-class-name"))
-				.password(prop.getProperty("spring.second.datasource.password"))
-				.url(prop.getProperty("spring.second.datasource.url"))
-				.username(prop.getProperty("spring.second.datasource.data-username")).build();
+		if (prop.getProperty("isJndiRequired").equalsIgnoreCase("false")) {
+			return DataSourceBuilder.create()
+					.driverClassName(prop.getProperty("spring.second.datasource.driver-class-name"))
+					.password(prop.getProperty("spring.second.datasource.password"))
+					.url(prop.getProperty("spring.second.datasource.url"))
+					.username(prop.getProperty("spring.second.datasource.data-username")).build();
+		} else {
+			final JndiDataSourceLookup lookup = new JndiDataSourceLookup();
+			lookup.setResourceRef(true);
+			DataSource dataSource = lookup.getDataSource("jdbc/test");
+			return dataSource;
+
+		}
 	}
 
 	// step2 create entityManagerFactory using
