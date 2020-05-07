@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ratna.architecture.transferobjects.ArchitectureResponse;
-import com.ratna.architecture.transferobjects.Document;
 import com.ratna.architecture.transferobjects.Employees;
 import com.ratna.architecture.transferobjects.ToDoTO;
 
