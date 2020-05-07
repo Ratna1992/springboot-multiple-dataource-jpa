@@ -2,6 +2,11 @@ package com.ratna.architecture.service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,11 +40,54 @@ public class LaunchService {
 	}
 
 	public ArchitectureResponse getAllUsers() {
-		return launchDAO.getAllUsers();
+
+		ArchitectureResponse architectureResponse = new ArchitectureResponse();
+		// creating executor service
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		// calling a method using lambda
+		Callable<ArchitectureResponse> architectureResponseFromDAO = () -> launchDAO.getAllUsers();
+
+		// submitting the request to executorservice
+		Future<ArchitectureResponse> future = executorService.submit(architectureResponseFromDAO);
+
+		// getting the response from future
+		try {
+			architectureResponse = future.get();
+		} catch (InterruptedException | ExecutionException e) {
+
+			architectureResponse.setStatusMsg(e.getLocalizedMessage());
+		}
+		// closing the executor service
+		finally {
+			executorService.shutdown();
+		}
+		return architectureResponse;
+
 	}
 
 	public ArchitectureResponse getAllAudience() {
-		return launchDAO.getAllAudience();
+
+		ArchitectureResponse architectureResponse = new ArchitectureResponse();
+		// creating executor service
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		// calling a method using lambda
+		Callable<ArchitectureResponse> architectureResponseFromDAO = () -> launchDAO.getAllAudience();
+
+		// submitting the request to executorservice
+		Future<ArchitectureResponse> future = executorService.submit(architectureResponseFromDAO);
+
+		// getting the response from future
+		try {
+			architectureResponse = future.get();
+		} catch (InterruptedException | ExecutionException e) {
+
+			architectureResponse.setStatusMsg(e.getLocalizedMessage());
+		}
+		// closing the executor service
+		finally {
+			executorService.shutdown();
+		}
+		return architectureResponse;
 	}
 
 }
