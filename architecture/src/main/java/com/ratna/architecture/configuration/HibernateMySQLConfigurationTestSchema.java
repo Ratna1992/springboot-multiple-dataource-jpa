@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -21,6 +23,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.ratna.architecture.utility.ArchitectureUtility;
+
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(entityManagerFactoryRef = "testEntityManagerFactory", basePackages = {
@@ -29,22 +33,33 @@ public class HibernateMySQLConfigurationTestSchema {
 	@Autowired
 	Environment prop;
 
+	private Logger logger = LoggerFactory.getLogger(HibernateMySQLConfigurationTestSchema.class);
+
 	// step1 create datasource
 	@Bean(name = "mySqlDataSourceTestSchema")
 	@ConfigurationProperties(prefix = "spring.second.datasource")
 	public DataSource mySqlDataSourceTestSchema() {
-		if (prop.getProperty("isJndiRequired").equalsIgnoreCase("false")) {
-			return DataSourceBuilder.create()
-					.driverClassName(prop.getProperty("spring.second.datasource.driver-class-name"))
-					.password(prop.getProperty("spring.second.datasource.password"))
-					.url(prop.getProperty("spring.second.datasource.url"))
-					.username(prop.getProperty("spring.second.datasource.data-username")).build();
-		} else {
-			final JndiDataSourceLookup lookup = new JndiDataSourceLookup();
-			lookup.setResourceRef(true);
-			DataSource dataSource = lookup.getDataSource("jdbc/test");
-			return dataSource;
+		logger.info(ArchitectureUtility.enteredInto("mySqlDataSourceTestSchema"));
+		try {
+			if (prop.getProperty("isJndiRequired").equalsIgnoreCase("false")) {
+				logger.info("Creating datasource without Jndi");
+				return DataSourceBuilder.create()
+						.driverClassName(prop.getProperty("spring.second.datasource.driver-class-name"))
+						.password(prop.getProperty("spring.second.datasource.password"))
+						.url(prop.getProperty("spring.second.datasource.url"))
+						.username(prop.getProperty("spring.second.datasource.data-username")).build();
+			} else {
+				logger.info("Creating datasource with JNDI");
+				final JndiDataSourceLookup lookup = new JndiDataSourceLookup();
+				lookup.setResourceRef(true);
+				DataSource dataSource = lookup.getDataSource("jdbc/test");
+				return dataSource;
 
+			}
+		} catch (Exception e) {
+			logger.info(ArchitectureUtility.exitedFrom("mySqlDataSourceTestSchema"));
+			logger.error(e.getMessage());
+			return null;
 		}
 	}
 
@@ -54,11 +69,14 @@ public class HibernateMySQLConfigurationTestSchema {
 	@Bean(name = "testEntityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder,
 			@Qualifier("mySqlDataSourceTestSchema") DataSource ds) {
+		logger.info(ArchitectureUtility.enteredInto("entityManagerFactory"));
 		Map<String, Object> properties = new HashMap<>();
 		properties.put("hibernate.hbm2ddl.auto", "update");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 		properties.put("hibernate.show_sql", true);
 		properties.put("hibernate.format_sql", true);
+		logger.info("created entityManager by using datasource and adding necessary properties");
+		logger.info(ArchitectureUtility.exitedFrom("entityManagerFactory"));
 		return builder.dataSource(ds).properties(properties).packages("com.ratna.architecture.testmodel")
 				.persistenceUnit("testSchema").build();
 
@@ -70,6 +88,9 @@ public class HibernateMySQLConfigurationTestSchema {
 	@Bean(name = "testTransactionManager")
 	public PlatformTransactionManager transactionManager(
 			@Qualifier("testEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+		logger.info(ArchitectureUtility.enteredInto("transactionManager"));
+		logger.info("created transactionManager by using entityManagerFactory");
+		logger.info(ArchitectureUtility.exitedFrom("transactionManager"));
 		return new JpaTransactionManager(entityManagerFactory);
 
 	}
