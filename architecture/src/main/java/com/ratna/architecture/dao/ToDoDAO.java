@@ -5,6 +5,8 @@ import java.io.StringReader;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
@@ -18,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ratna.architecture.transferobjects.ArchitectureResponse;
 import com.ratna.architecture.transferobjects.Employees;
 import com.ratna.architecture.transferobjects.ToDoTO;
+import com.ratna.architecture.utility.ArchitectureUtility;
 
 @Repository
 public class ToDoDAO {
@@ -25,8 +28,9 @@ public class ToDoDAO {
 	Environment prop;
 	@Autowired
 	RestTemplate restTemplate;
-
+	private Logger logger = LoggerFactory.getLogger(ToDoDAO.class);
 	public ArchitectureResponse getDataFromJSONService() {
+		logger.info(ArchitectureUtility.enteredInto("getDataFromJSONService"));
 		ArchitectureResponse architectureResponse = new ArchitectureResponse();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
@@ -45,12 +49,15 @@ public class ToDoDAO {
 			architectureResponse.setStatusMsg(e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
+		logger.info(ArchitectureUtility.exitedFrom("getDataFromJSONService"));
 		return architectureResponse;
 
 	}
 
 	public ArchitectureResponse getDataFromXMLService() {
+		logger.info(ArchitectureUtility.enteredInto("getDataFromXMLService"));
 		ArchitectureResponse architectureResponse = new ArchitectureResponse();
 		try {
 			HttpHeaders httpHeaders = new HttpHeaders();
@@ -70,7 +77,9 @@ public class ToDoDAO {
 			architectureResponse.setStatusMsg(e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
+		logger.info(ArchitectureUtility.exitedFrom("getDataFromXMLService"));
 		return architectureResponse;
 
 	}
