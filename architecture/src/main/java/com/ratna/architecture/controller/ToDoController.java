@@ -34,4 +34,18 @@ public class ToDoController {
 		return toDAOService.getDataFromXMLService();
 	}
 
+	@GetMapping(value = "/clearJSONCache", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArchitectureResponse clearJSONCache() {
+		logger.info(ArchitectureUtility.enteredInto("clearJSONCache"));
+		logger.info(ArchitectureUtility.exitedFrom("clearJSONCache"));
+		return toDAOService.removeCacheFromJSONService();
+	}
+
+	@GetMapping(value = "/clearXMLCache", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArchitectureResponse clearXMLCache() {
+		logger.info(ArchitectureUtility.enteredInto("clearXMLCache"));
+		logger.info(ArchitectureUtility.exitedFrom("clearXMLCache"));
+		return toDAOService.removeCacheFromXMLService();
+	}
+
 }
