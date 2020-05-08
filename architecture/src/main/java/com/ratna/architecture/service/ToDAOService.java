@@ -9,10 +9,10 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import com.ratna.architecture.dao.ToDoDAO;
+import com.ratna.architecture.filereaders.ArchitectureCSVReader;
 import com.ratna.architecture.transferobjects.ArchitectureResponse;
 import com.ratna.architecture.utility.ArchitectureUtility;
 
@@ -20,6 +20,9 @@ import com.ratna.architecture.utility.ArchitectureUtility;
 public class ToDAOService {
 	@Autowired
 	ToDoDAO toDoDAO;
+	
+	@Autowired
+	ArchitectureCSVReader csvReader;
 	private Logger logger = LoggerFactory.getLogger(ToDAOService.class);
 
 	public ArchitectureResponse getDataFromJSONService() {
@@ -93,6 +96,12 @@ public class ToDAOService {
 		logger.info(ArchitectureUtility.enteredInto("removeCacheFromJSONService"));
 		logger.info(ArchitectureUtility.exitedFrom("removeCacheFromJSONService"));
 		return toDoDAO.removeCacheFromJSONService();
+	}
+	
+	public ArchitectureResponse fetchCsvDetails() {
+		logger.info(ArchitectureUtility.enteredInto("fetchCsvDetails"));
+		logger.info(ArchitectureUtility.exitedFrom("fetchCsvDetails"));
+		return csvReader.csvReader();
 	}
 
 }
