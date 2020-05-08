@@ -48,4 +48,11 @@ public class ToDoController {
 		return toDAOService.removeCacheFromXMLService();
 	}
 
+	@GetMapping(value = "/readCSVFile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArchitectureResponse readCSVFile() {
+		logger.info(ArchitectureUtility.enteredInto("readCSVFile"));
+		logger.info(ArchitectureUtility.exitedFrom("readCSVFile"));
+		return toDAOService.fetchCsvDetails();
+	}
+
 }
