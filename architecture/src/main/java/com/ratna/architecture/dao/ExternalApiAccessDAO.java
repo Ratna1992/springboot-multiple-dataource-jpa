@@ -25,12 +25,12 @@ import com.ratna.architecture.transferobjects.ToDoTO;
 import com.ratna.architecture.utility.ArchitectureUtility;
 
 @Repository
-public class ToDoDAO {
+public class ExternalApiAccessDAO {
 	@Autowired
 	Environment prop;
 	@Autowired
 	RestTemplate restTemplate;
-	private Logger logger = LoggerFactory.getLogger(ToDoDAO.class);
+	private Logger logger = LoggerFactory.getLogger(ExternalApiAccessDAO.class);
 	@Cacheable("getDataFromJSONService")
 	public ArchitectureResponse getDataFromJSONService() {
 		logger.info(ArchitectureUtility.enteredInto("getDataFromJSONService"));

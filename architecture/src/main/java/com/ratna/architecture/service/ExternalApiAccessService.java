@@ -11,19 +11,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ratna.architecture.dao.ToDoDAO;
+import com.ratna.architecture.dao.ExternalApiAccessDAO;
 import com.ratna.architecture.filereaders.ArchitectureCSVReader;
 import com.ratna.architecture.transferobjects.ArchitectureResponse;
 import com.ratna.architecture.utility.ArchitectureUtility;
 
 @Service
-public class ToDAOService {
+public class ExternalApiAccessService {
 	@Autowired
-	ToDoDAO toDoDAO;
+	ExternalApiAccessDAO toDoDAO;
 	
 	@Autowired
 	ArchitectureCSVReader csvReader;
-	private Logger logger = LoggerFactory.getLogger(ToDAOService.class);
+	private Logger logger = LoggerFactory.getLogger(ExternalApiAccessService.class);
 
 	public ArchitectureResponse getDataFromJSONService() {
 		logger.info(ArchitectureUtility.enteredInto("getDataFromJSONService"));
@@ -98,10 +98,6 @@ public class ToDAOService {
 		return toDoDAO.removeCacheFromJSONService();
 	}
 	
-	public ArchitectureResponse fetchCsvDetails() {
-		logger.info(ArchitectureUtility.enteredInto("fetchCsvDetails"));
-		logger.info(ArchitectureUtility.exitedFrom("fetchCsvDetails"));
-		return csvReader.csvReader();
-	}
+	
 
 }
