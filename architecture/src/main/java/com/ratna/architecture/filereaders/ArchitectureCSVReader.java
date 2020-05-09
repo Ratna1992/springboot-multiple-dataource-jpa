@@ -4,7 +4,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import com.ratna.architecture.testmodel.Audience;
 import com.ratna.architecture.transferobjects.ArchitectureResponse;
 import com.ratna.architecture.transferobjects.User;
 import com.ratna.architecture.utility.ArchitectureUtility;
@@ -24,6 +30,8 @@ public class ArchitectureCSVReader {
 	private Logger logger = LoggerFactory.getLogger(ArchitectureCSVReader.class);
 	@Autowired
 	ResourceLoader resourceLoader;
+	@PersistenceContext(unitName = "testSchema")
+	private EntityManager testSchema;
 
 	public ArchitectureResponse csvReader() {
 		ArchitectureResponse architectureResponse = new ArchitectureResponse();
@@ -51,6 +59,28 @@ public class ArchitectureCSVReader {
 		}
 
 		logger.info(ArchitectureUtility.exitedFrom("csvReader"));
+		return architectureResponse;
+	}
+
+	@SuppressWarnings("unchecked")
+	public ArchitectureResponse downloadCSVFile() {
+		ArchitectureResponse architectureResponse = new ArchitectureResponse();
+		logger.info(ArchitectureUtility.enteredInto("downloadCSVFile"));
+		List<Audience> resultList = Collections.emptyList();
+		try {
+			Query createQuery = testSchema.createQuery("From Audience");
+			resultList = createQuery.getResultList();
+			architectureResponse.setStatusCode(200);
+			architectureResponse.setStatusMsg("Success");
+			architectureResponse.setResponse(resultList);
+
+		} catch (Exception ex) {
+			architectureResponse.setStatusCode(400);
+			architectureResponse.setStatusMsg("Failed");
+			architectureResponse.setResponse(ex.getMessage());
+			logger.error("Error mapping Bean to CSV", ex);
+		}
+		logger.info(ArchitectureUtility.exitedFrom("downloadCSVFile"));
 		return architectureResponse;
 	}
 
